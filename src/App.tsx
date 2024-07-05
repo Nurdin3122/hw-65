@@ -4,11 +4,35 @@ import {Route, Routes,} from "react-router-dom";
 import Header from "./container/Header/Header.tsx";
 import Redactor from "./companents/Redactor/Redactor.tsx";
 import GetInformationPages from "./companents/GetInformationPages/GetInformationPages.tsx";
-import {useState} from "react";
-import {Page} from "./type.ts";
+import {useCallback, useEffect, useState} from "react";
+import {ApiPageList, Page} from "./type.ts";
+import axiosApi from "./axiosApi.ts";
+import Home from "./container/Home/Home.tsx";
 
 const App = () => {
     const [pages, setPages] = useState<Page[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    const fetchPages = useCallback(async () => {
+        try {
+            const {data:page} = await axiosApi.get<ApiPageList | null>("/pages.json");
+            if(!page) {
+                setPages([]);
+            } else {
+                const newPage = Object.keys(page).map((id) => ({
+                    ...page[id],
+                    id,
+                }))
+                setPages(newPage);
+            }
+        } finally {
+            setLoading(false)
+        }
+    },[]);
+
+    useEffect(() => {
+        void fetchPages();
+    }, [fetchPages]);
 
 
    return (
@@ -19,11 +43,11 @@ const App = () => {
 
            <main>
                <Routes>
-                   <Route path="/" element={<GetInformationPages page={pages}/>}/>
-                   <Route path="/about" element={<GetInformationPages page={pages}/>}/>
-                   <Route path="/contacts" element={<GetInformationPages page={pages}/>}/>
-                   <Route path="/divisions" element={<GetInformationPages page={pages}/>}/>
-                   <Route path="/admin" element={<Redactor/>}/>
+                   <Route path="/" element={<Home pages={pages}/>}/>
+                   <Route path="/pages/:id" element={<GetInformationPages pages={pages}/>}/>
+                   <Route path="/pages/:id" element={<GetInformationPages pages={pages}/>}/>
+                   <Route path="/pages/:id" element={<GetInformationPages pages={pages}/>}/>
+                   <Route path="/pages/:id" element={<Redactor/>}/>
                    <Route path="*" element={<h4>Sorry not found</h4>}/>
                </Routes>
            </main>

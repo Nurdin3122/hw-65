@@ -3,8 +3,8 @@ import React from 'react';
 const Redactor = () => {
     return (
        <form>
-           <h2>Redactor</h2>
-           <div className="form-block">
+           <h2 className="text-center">Redactor</h2>
+           <div className="form-block text-center">
                <select className="form-select">
                    <option selected>Open this select menu</option>
                    <option value="1">One</option>
