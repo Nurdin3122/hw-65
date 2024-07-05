@@ -1,28 +1,71 @@
-import React from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
+import {ApiPage,  Page } from "../../type.ts";
+import axiosApi from "../../axiosApi.ts";
 
-const Redactor = () => {
+interface Props {
+    pages:Page[];
+}
+
+
+const Redactor:React.FC<Props> = ({pages,existing}) => {
+    const [page, setPage] = useState<Page[]>([])
+    const [selected, setSelected] = useState<string>('');
+
+
+    const fetchOnePage= useCallback(async () => {
+        const {data:dish} = await axiosApi.get<ApiPage | null>(`/dishes/${selected}.json`);
+        setPage(dish)
+
+    },[selected]);
+
+    useEffect(() => {
+        void fetchOnePage();
+    }, [fetchOnePage]);
+
+
+    const onFormSubmit = (event: React.FormEvent) => {
+        event.preventDefault();
+    };
+
+    const changeSelected = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelected(event.target.value);
+    }
+
+
     return (
-       <form>
-           <h2 className="text-center">Redactor</h2>
-           <div className="form-block text-center">
-               <select className="form-select">
-                   <option selected>Open this select menu</option>
-                   <option value="1">One</option>
-                   <option value="2">Two</option>
-                   <option value="3">Three</option>
-               </select>
-               <div className="mb-3">
-                   <label htmlFor="exampleFormControlInput1" className="form-label">Title</label>
-                   <input type="email" className="form-control" id="exampleFormControlInput1"
-                          placeholder="Title"/>
-               </div>
-               <div className="mb-3">
-                   <label htmlFor="exampleFormControlTextarea1" className="form-label">Example textarea</label>
-                   <textarea className="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-               </div>
-               <button type="submit" className="btn btn-primary">Save</button>
-           </div>
-       </form>
+
+        <form onSubmit={onFormSubmit}>
+            <h2 className="text-center">Redactor</h2>
+            <div className="container">
+                <h1>Admin Panel</h1>
+                <select className="form-select" value={selected} onChange={changeSelected}>
+                    <option>Select a page</option>
+                    {pages.map(page => (
+                        <option>{page.id}</option>
+                    ))}
+                </select>
+                <p>Вы выбрали: {selected}</p>
+                <div>
+                    <input
+                        type="text"
+                        name="title"
+                        id="text"
+                        required
+                        className="form-control"
+
+                    />
+                    <textarea
+                        className="form-control my-2"
+                        placeholder="Content"
+                        name="text"
+                        id="text"
+                    />
+                    <button className="btn btn-primary">Save</button>
+                </div>
+            </div>
+
+        </form>
+
     );
 };
 

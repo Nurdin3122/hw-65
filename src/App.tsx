@@ -5,7 +5,7 @@ import Header from "./container/Header/Header.tsx";
 import Redactor from "./companents/Redactor/Redactor.tsx";
 import GetInformationPages from "./companents/GetInformationPages/GetInformationPages.tsx";
 import {useCallback, useEffect, useState} from "react";
-import {ApiPageList, Page} from "./type.ts";
+import {ApiPage, ApiPageList, Page} from "./type.ts";
 import axiosApi from "./axiosApi.ts";
 import Home from "./container/Home/Home.tsx";
 
@@ -47,7 +47,9 @@ const App = () => {
                    <Route path="/pages/:id" element={<GetInformationPages pages={pages}/>}/>
                    <Route path="/pages/:id" element={<GetInformationPages pages={pages}/>}/>
                    <Route path="/pages/:id" element={<GetInformationPages pages={pages}/>}/>
-                   <Route path="/pages/:id" element={<Redactor/>}/>
+                   <Route path="/pages/:id" element={<GetInformationPages pages={pages}/>}/>
+                   <Route path="/pages/:id" element={<GetInformationPages pages={pages}/>}/>
+                   <Route path="/pages/admin" element={<Redactor pages={pages}/>}/>
                    <Route path="*" element={<h4>Sorry not found</h4>}/>
                </Routes>
            </main>
